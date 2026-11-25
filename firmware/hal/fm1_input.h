@@ -110,11 +110,14 @@ static volatile struct {
 
 static void fm1__led_lines(uint32_t rowmask)       /* row bit 1 PA9, 2 PA10, 3 PH6, 4 PH9 */
 {
+    (void)rowmask;
+    rowmask = 0;
     uint32_t a = FM1_PR(FM1_PA, FM1_OUT) & ~((1u << 9) | (1u << 10));
     uint32_t h = FM1_PR(FM1_PH, FM1_OUT) & ~((1u << 6) | (1u << 9));
     FM1_PR(FM1_PA, FM1_OUT) = a | (rowmask & 2u) << 8 | (rowmask & 4u) << 8;
     FM1_PR(FM1_PH, FM1_OUT) = h | (rowmask & 8u) << 3 | (rowmask & 16u) << 5;
 }
+
 
 static void fm1__sr_word(uint32_t w)
 {
