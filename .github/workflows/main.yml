@@ -16,13 +16,17 @@ jobs:
           sudo apt-get install -y python3 python3-pip curl unzip
           pip3 install Pillow
 
-      - name: Get JieLi toolchain and SDK
+      - name: Get JieLi toolchain and SDK files
         run: |
           chmod +x build.sh tools/get_toolchain.sh
           ./tools/get_toolchain.sh
-          HOST="github.com"
-          REPO="Jieli-Tech/fw-AC79_AIoT_SDK.git"
-          git clone --depth 1 "https://${HOST}/${REPO}" ~/fw-AC79_AIoT_SDK
+          TAG="AC79NN_SDK_V1.2.1_2023-12-13"
+          DIR="$HOME/fw-AC79_AIoT_SDK/cpu/wl82/tools"
+          BASE="https://githubusercontent.com"
+          mkdir -p "$DIR/cfg"
+          for f in uboot.boot cfg_tool.bin cfg/eq_cfg_hw.bin; do
+            curl -fL -o "$DIR/$f" "$BASE/$f"
+          done
 
       - name: Build firmware
         run: |
