@@ -20,7 +20,9 @@ jobs:
         run: |
           chmod +x build.sh tools/get_toolchain.sh
           ./tools/get_toolchain.sh
-          git clone --depth 1 https://github.com ~/fw-AC79_AIoT_SDK
+          HOST="github.com"
+          REPO="Jieli-Tech/fw-AC79_AIoT_SDK.git"
+          git clone --depth 1 "https://${HOST}/${REPO}" ~/fw-AC79_AIoT_SDK
 
       - name: Build firmware
         run: |
