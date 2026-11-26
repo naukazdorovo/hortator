@@ -7,33 +7,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install tools
         run: |
           sudo apt-get update
           sudo apt-get install -y python3 python3-pip curl unzip
           pip3 install Pillow
 
-      - name: Get JieLi toolchain and SDK files
+      - name: Download toolchain and SDK
         run: |
           chmod +x build.sh tools/get_toolchain.sh
           ./tools/get_toolchain.sh
-          TAG="AC79NN_SDK_V1.2.1_2023-12-13"
-          DIR="$HOME/fw-AC79_AIoT_SDK/cpu/wl82/tools"
-          BASE="https://githubusercontent.com"
-          mkdir -p "$DIR/cfg"
-          for f in uboot.boot cfg_tool.bin cfg/eq_cfg_hw.bin; do
-            curl -fL -o "$DIR/$f" "$BASE/$f"
-          done
+          mkdir -p ~/fw-AC79_AIoT_SDK/cpu/wl82/tools/cfg
+          cd ~/fw-AC79_AIoT_SDK/cpu/wl82/tools
+          curl -fLO https://githubusercontent.com
+          curl -fLO https://githubusercontent.com
+          curl -fLo cfg/eq_cfg_hw.bin https://githubusercontent.com
 
-      - name: Build firmware
-        run: |
-          DRUM_PACKAGE=1 ./build.sh
+      - name: Build
+        run: DRUM_PACKAGE=1 ./build.sh
 
-      - name: Upload built firmware
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: hortator-no-leds
           path: build/*
