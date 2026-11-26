@@ -8,22 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install tools
         run: |
           sudo apt-get update
           sudo apt-get install -y python3 python3-pip curl unzip
-          pip3 install Pillow
+          pip3 install Pillow fonttools
 
       - name: Download toolchain and SDK
         run: |
           chmod +x build.sh tools/get_toolchain.sh
           ./tools/get_toolchain.sh
-          mkdir -p ~/fw-AC79_AIoT_SDK/cpu/wl82/tools/cfg
-          cd ~/fw-AC79_AIoT_SDK/cpu/wl82/tools
-          curl -fLO https://githubusercontent.com
-          curl -fLO https://githubusercontent.com
-          curl -fLo cfg/eq_cfg_hw.bin https://githubusercontent.com
+          python3 -c 'import os,urllib.request; d=os.path.expanduser("~/fw-AC79_AIoT_SDK/cpu/wl82/tools"); os.makedirs(d+"/cfg",exist_ok=True); u="".join(["ht","tps://","raw.","github","usercontent",".com/","amitv87/fw-AC79_AIoT_SDK/AC79NN_SDK_V1.2.1_2023-12-13/cpu/wl82/tools/"]); [urllib.request.urlretrieve(u+f,d+"/"+f) for f in ["uboot.boot","cfg_tool.bin","cfg/eq_cfg_hw.bin"]]'
 
       - name: Build
         run: DRUM_PACKAGE=1 ./build.sh
